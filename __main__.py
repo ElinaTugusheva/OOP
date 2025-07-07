@@ -103,6 +103,14 @@ def average_grade_students(students, courses):
     return sum(total_grades) / len(total_grades) if total_grades else 0
 
 
+def average_grade_lecturers(lecturers, courses):
+    total_grades = []
+    for lecture in lecturers:
+        if courses in lecture.grades:
+            total_grades.extend(lecture.grades[courses])
+    return sum(total_grades) / len(total_grades) if total_grades else 0
+
+
 reviewer1 = Reviewer('Jon', 'Snow')
 reviewer1.courses_attached += ['Git']
 
@@ -126,9 +134,14 @@ student2.courses_in_progress = ['Python', 'Java']
 student2.finished_courses = ['Git']
 
 students = [student1, student2]
-average_python_grade = average_grade_students(students, 'Python')
-average_git_grade = average_grade_students(students, 'Git')
-average_java_grade = average_grade_students(students, 'Java')
+average_python_grade_students = average_grade_students(students, 'Python')
+average_git_grade_students = average_grade_students(students, 'Git')
+average_java_grade_students = average_grade_students(students, 'Java')
+
+lecturers = [lecturer1, lecturer2]
+average_python_grade_lecturer = average_grade_students(lecturers, 'Python')
+average_git_grade_lecturer = average_grade_students(lecturers, 'Git')
+average_java_grade_lecturer = average_grade_students(lecturers, 'Java')
 
 print('Проверяющие:  ')
 print(reviewer1)
@@ -142,6 +155,9 @@ print('Студенты:  ')
 print(student1)
 print(student2)
 
-print(f'Средняя оценка студентов по курсу Git: {average_git_grade:.1f}')
-print(f'Средняя оценка студентов по курсу Python: {average_python_grade:.1f}')
-print(f'Средняя оценка студентов по курсу Java: {average_java_grade:.1f}')
+print(f'Средняя оценка студентов по курсу Git: {average_git_grade_students:.1f}')
+print(f'Средняя оценка студентов по курсу Python: {average_python_grade_students:.1f}')
+print(f'Средняя оценка студентов по курсу Java: {average_java_grade_students:.1f}')
+print(f'Средняя оценка лекторов по курсу Git: {average_git_grade_lecturer:.1f}')
+print(f'Средняя оценка лекторов по курсу Python: {average_python_grade_lecturer:.1f}')
+print(f'Средняя оценка лекторов по курсу Java: {average_java_grade_lecturer:.1f}')
