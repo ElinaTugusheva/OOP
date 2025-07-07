@@ -17,13 +17,14 @@ class Student:
         else:
             return 'Ошибка'
 
-    def add_grade(self, grade):
+    def add_grade(self, course, grade):
         if isinstance(grade, float) and 0 <= grade <= 10:
             self.grades.append(grade)
 
     @property
     def average_grade(self):
-        return sum(self.grades) / len(self.grades) if self.grades else None
+        all_grades = [grade for grades_list in self.grades.values() for grade in grades_list]
+        return sum(all_grades) / len(all_grades) if all_grades else None
 
     def __str__(self):
         avg_grade = f"{self.average_grade:.1f}" if self.average_grade is not None else 'Нет оценок'
@@ -58,7 +59,8 @@ class Lecturer(Mentor):
 
     @property
     def average_grade(self):
-        return sum(self.grades) / len(self.grades) if self.grades else None
+        all_grades = [grade for grades_list in self.grades.values() for grade in grades_list]
+        return sum(all_grades) / len(all_grades) if all_grades else None
 
     def __str__(self):
         avg_grade = f"{self.average_grade:.1f}" if self.average_grade is not None else 'Нет оценок'
@@ -93,18 +95,53 @@ class Reviewer(Mentor):
         return f'Имя: {self.name}\nФамилия: {self.surname}'
 
 
-some_reviewer = Reviewer('Some', 'Buddy')
-some_lecturer = Lecturer('Some', 'Buddy')
-some_lecturer.grades = {9.9, 10}
+def average_grade_students(students, courses):
+    total_grades = []
+    for student in students:
+        if courses in student.grades:
+            total_grades.extend(student.grades[courses])
+    return sum(total_grades) / len(total_grades) if total_grades else 0
 
-some_student = Student('Ruoy', 'Eman', 'Male')
-some_student.grades = {9.9, 10}
-some_student.courses_in_progress = ['Python', 'Git']
-some_student.finished_courses = ['Введение в программирование']
 
-print('Проверяющий:  ')
-print(some_reviewer)
-print('Лектор:  ')
-print(some_lecturer)
-print('Студент:  ')
-print(some_student)
+reviewer1 = Reviewer('Jon', 'Snow')
+reviewer1.courses_attached += ['Git']
+
+reviewer2 = Reviewer('Sansa', 'Stark')
+reviewer2.courses_attached += ['Git', 'Java']
+
+lecturer1 = Lecturer('Daenerys', 'Targaryen')
+lecturer1.courses_attached += ['Python', 'Git']
+lecturer1.grades = {'Python': [8], 'Git': [10]}
+lecturer2 = Lecturer('Tyrion', 'Lannister')
+lecturer2.courses_attached += ['Python', 'Java']
+lecturer2.grades = {'Python': [10], 'Java': [7]}
+
+student1 = Student('Jaime', 'Lannister', 'Male')
+student1.grades = {'Python': [10], 'Git': [9]}
+student1.courses_in_progress = ['Python', 'Git']
+student1.finished_courses = ['Введение в программирование']
+student2 = Student('Arya', 'Stark', 'Female')
+student2.grades = {'Python': [9], 'Java': [8]}
+student2.courses_in_progress = ['Python', 'Java']
+student2.finished_courses = ['Git']
+
+students = [student1, student2]
+average_python_grade = average_grade_students(students, 'Python')
+average_git_grade = average_grade_students(students, 'Git')
+average_java_grade = average_grade_students(students, 'Java')
+
+print('Проверяющие:  ')
+print(reviewer1)
+print(reviewer2)
+print('Лекторы:  ')
+print(lecturer1)
+print(lecturer2)
+print(lecturer1.grades)
+print(lecturer2.grades)
+print('Студенты:  ')
+print(student1)
+print(student2)
+
+print(f'Средняя оценка студентов по курсу Git: {average_git_grade:.1f}')
+print(f'Средняя оценка студентов по курсу Python: {average_python_grade:.1f}')
+print(f'Средняя оценка студентов по курсу Java: {average_java_grade:.1f}')
